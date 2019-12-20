@@ -1,13 +1,21 @@
 Лабораторная работа №4
 
 Код программы 
+
 //#include <cstdint>            //for int types such as uint32_t
+
 #include "gpioaregisters.hpp" //for Gpioa
+
 #include "gpiocregisters.hpp" //for Gpioc
+
 #include "gpiobregisters.hpp" //for Gpiob
+
 #include "rccregisters.hpp"   //for RCC
+
 #include "tim5registers.hpp"   //for SPI2
+
 #include "nvicregisters.hpp"  //for NVIC
+
 
 using namespace std ;
 
@@ -18,6 +26,7 @@ extern "C"
 int __low_level_init(void)
 {
   RCC::CR::HSION::On::Set() ; // подключение внутр. частоты
+  
   while(!RCC::CR::HSIRDY::Ready::IsSet()) 
   {
   }
