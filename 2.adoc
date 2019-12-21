@@ -1,0 +1,323 @@
+Лабраторная работа №2
+
+* Задание 1
+
+Необходимо узнать на каком адресе расположен модуль GPIOC
+
+Адрес GPIOC: 0x4002 0800 - 0x4002 0BFF
+
+ТАк же необходимо узнать смещение регистра GPIOС_MODER относительно адреса GPIOC и вычислить адрес регистра GPIOC_MODER 
+
+Смещение GPIOС_MODER относительно адреса GPIOC: 0x00
+
+Смещение  GPIOC_ODR относительно адреса GPIOC: 0x14
+
+{
+
+  constexpr size_t GpiocAddr = 0x40020800 ; / / записываем адрес GPIOC
+
+  constexpr size_t ModerOffset= 0x00 ; / / смещение MODER
+
+  constexpr size_t OdrOffset= 0x14 ; / / смещение ODR
+
+  constexpr size_t ModerAddr = GpiocAddr + ModerOffset; / / адрес GPIOC MODER
+
+  constexpr size_t Odrddr = GpiocAddr + OdrOffset; / / адрес GPIOC ODR
+}
+
+Теперь необходимо записать по адресу регистра GPIOC_MODER биты 10,16,18 в 1, а биты 11,17,19 в 0.
+
+ volatile uint32_t* ModerPointer= reinterpret_cast< volatile
+ 
+ uint32_t*>(ModerAddr);
+ 
+  volatile uint32_t* OdrPointer= reinterpret_cast< volatile uint32_t*>(OdrAddr);
+  
+  for(;;)
+  {
+  
+  *ModerPointer|=((1<<18) |(1<<16)|(1<<10)); //биты 10,16,18 в 1
+  
+   *ModerPointer&= ~((1<<11)|(1<<17)|(1<<19));//биты 11,17,19 в 0
+   
+После задержки Записать по адресу регистра GPIOC_ODR биты 5,8,9 в 0
+
+ *OdrPointer|=((1<<5) |(1<<8)|(1<<9));
+ 
+Написать функцию задержки используя цикл void Delay(). 
+
+ void  delay ( voiddelay uint32_t)
+  {
+  для ( int i= 0; i)
+  {
+  }
+  }
+  
+И вызвать ее после установки битов
+
+ delay(1'000'000);
+ 
+После задержки Записать по адресу регистра GPIOC_ODR биты 5,8,9 в 0.
+
+  OdrPointer &= ~ ((1 << 5 )|(1<<8)|(1<<9));
+  
+Запустить программу, в пошаговой отладке в окне Register, посмотреть, что происходит с регистрами GPIOС_MODER и GPIOС_ODR.
+
+Значение регистров GPIOС_MODER до запуска программы
+
+
+
+[width="100%",options="header,footer"]
+|====================
+| Name |Value | Access 
+|  Moder15|0x00000000  |  ReadWrite
+|  Moder14|0x0  |  ReadWrite
+|...  |...  | ... 
+| Moder9 |0x0  |ReadWrite  
+| Moder8 | 0x0 | ReadWrite 
+| Moder5| 0x0 |ReadWrite  
+| Moder4| 0x0 |ReadWrite 
+| Moder3| 0x0 |ReadWrite 
+| Moder2| 0x0 |ReadWrite 
+| Moder1| 0x0 |ReadWrite 
+| Moder0| 0x0 |ReadWrite 
+|====================
+
+
+Значение регистров GPIOС_MODER в конце программы 
+
+[width="100%",options="header,footer"]
+|====================
+| Name | Value |Access  
+|   Moder15|0x00050400  | ReadWrite 
+| Moder14 |0x0  |  ReadWrite
+| ... |...  | ... 
+| Moder9 |0x1  | ReadWrite 
+|Moder8  | 0x1 | ReadWrite 
+|Moder5  | 0x1 |ReadWrite  
+|Moder4 |0x0  |  ReadWrite
+|Moder3 |0x0  |  ReadWrite
+|Moder2 |0x0  |  ReadWrite
+|Moder1 |0x0  |  ReadWrite
+|  Moder0 |0x0  |  ReadWrite
+|====================
+
+
+Значение регистров GPIOС_ODR до запуска программы
+
+
+[width="100%",options="header,footer"]
+|====================
+|  Name|  Value|  Access
+| ODR15 |0  | ReadWrite 
+| ODR14 |  |  ReadWrite
+|  ...|...  | .... 
+|  ODR9|  0|ReadWrite  
+|  ODR8| 0 |  ReadWrite
+|  ODR5| 0 | ReadWrite 
+|  ODR4| 0 | ReadWrite
+|  ODR3| 0 | ReadWrite
+|  ODR2| 0 | ReadWrite
+|  ODR1| 0 | ReadWrite
+|  ODR0| 0 | ReadWrite
+|====================
+
+
+Значение регистров GPIOС_ODR в конце программы
+
+
+|====================
+|  Name|  Value|  Access
+| ODR15 |0x00000000  | ReadWrite 
+| ODR14 |  |  ReadWrite
+|  ...|...  | .... 
+|  ODR9|  0|ReadWrite  
+|  ODR8| 0 |  ReadWrite
+|  ODR5| 0 | ReadWrite 
+|  ODR4| 0 | ReadWrite 
+|  ODR3| 0 | ReadWrite 
+|  ODR2| 0 | ReadWrite 
+|  ODR1| 0 | ReadWrite 
+|  ODR0| 0 | ReadWrite 
+
+|====================
+
+Значение регистров GPIOС_MODER до задержки
+|====================
+| Name | Value |Access  
+|   Moder15|0x00050400  | ReadWrite 
+| Moder14 |0x0  |  ReadWrite
+| ... |...  | ... 
+| Moder9 |0x0  | ReadWrite 
+|Moder8  | 0x0 | ReadWrite 
+|Moder5  | 0x0 |ReadWrite  
+|Moder4  | 0x0 |ReadWrite
+|Moder3  | 0x0 |ReadWrite 
+|Moder2  | 0x0 |ReadWrite 
+|Moder1  | 0x0 |ReadWrite 
+|Moder0  | 0x0 |ReadWrite 
+|====================
+
+Значение регистров GPIOС_ODR до задержки
+
+|====================
+|  Name|  Value|  Access
+| ODR15 |0x00000320  | ReadWrite 
+| ODR14 |  |  ReadWrite
+|  ...|...  | .... 
+|  ODR9|  1|ReadWrite  
+|  ODR8| 1 |  ReadWrite
+|  ODR5| 1 | ReadWrite 
+|ODR4 | 0| ReadWrite
+|...|...|...
+|ODR0 | 0| ReadWrite
+|====================
+
+
+* Задание 2
+
+Создать указатель типа volatile int*, которая будет содержать адрес регистра GPIOC_MODER
+
+  volatile uint32_t * ModerPointer = reinterpret_cast<volatile uint32_t*>(0x40020800);
+  
+Создать переменную типа int и записать туда значение, которое содержится по этому адресу
+
+int Moder = * ModerPointer;
+
+Запустить отладку, запустить окно Memory и проверить, что по этому адресу лежит это значение
+
+В окне memory:
+0х40020800 cd cd cd cd cd cd cd cd cd cd cd cd cd cd cd ..............
+
+В регистре 
+
+[width="100%",options="header,footer"]
+|====================
+|  MODER|0xCDCDCDCD  
+|====================
+
+* Задание 3 
+
+Произвести настройку тактирования микропроцессора по варианту
+
+
+[width="100%",options="header,footer"]
+|====================
+| 6 |  HSI|  4Мгц
+|====================
+
+Определяем источник частоты
+
+Выберем источник HSE - внешний.
+
+Регистр управления частотой 
+
+  RCC::CR::HSEON::ON::Set();
+  
+
+Далее необходимо дождаться стабилизации источника(Ready):
+ 
+ (!RCC::CR::HSERDY::Enable::IsSet())
+ {
+ };
+ 
+Теперь назаначаем источник на системную частоту
+
+ RCC:: CFGR:: SW:: Hse:: Set();
+ 
+И дожидаемся пока источник не переключится на системную частоту
+
+(!RCC::CFGR::SWS::Hse::IsSet())
+{
+};
+
+Теперь переходим к настройке частоты тактирования с помощью бита HPRE
+
+Частота  8Мгц ее необходимо разделить на 2, это мы посмортрели в библии.
+
+RCC::CFGR::HPRE::Value1::Set();
+
+* Задание 4
+
+#include "gpioaregisters.hpp"
+#include "gpiocregisters.hpp" //
+#include "rccregisters.hpp"
+#include "tim2registers.hpp"
+
+
+extern "C" //внешний
+{
+  int __low_level_init(void)
+  {
+    RCC::CR::HSION::On::Set();
+    while ( !RCC::CR::HSIRDY::Enable::IsSet( ) )
+     {
+
+     };
+
+    RCC::CFGR::SW::Hsi::Set();
+    while ( !RCC::CFGR::SWS::Hsi::IsSet( ) )
+    {
+
+    };
+
+    RCC::AHB1ENR::GPIOCEN::Enable::Set() ;
+    RCC::AHB1ENR::GPIOAEN::Enable::Set() ;
+    GPIOA::MODER::MODER5::Output::Set() ;
+    GPIOC::MODER::MODER5::Output::Set() ;
+    GPIOC::MODER::MODER8::Output::Set() ;
+    GPIOC::MODER::MODER9::Output::Set() ;
+    GPIOC::MODER::MODER13::Input::Set() ;
+
+    RCC::APB1ENR::TIM2EN::Enable::Set() ;
+    TIM2::CR1::URS::OverFlow::Set();
+    return 0;
+  }
+}
+
+void Delay (std::uint32_t delay)
+
+{
+  TIM2::ARR::Write(16'000 * delay );
+  TIM2::SR::UIF::NoUpdate::Set();
+  TIM2::CNT::Write(0);
+  TIM2::CR1::CEN::Enable::Set();
+  while (TIM2::SR::UIF::NoUpdate::IsSet() )
+  {
+
+  }
+  TIM2::CR1::CEN::Disable::Set();
+}
+
+int main()
+{
+  bool flag = false;
+  for (; ;)
+  {
+
+    if(GPIOC::IDR::IDR13::Low::IsSet()) //kn vkl
+    {
+      while(GPIOC::IDR::IDR13::Low::IsSet())
+      {
+      } ;
+
+      if(flag)
+      {
+        GPIOA::ODR::ODR5::High::Set ();
+        GPIOC::ODR::ODR5::High::Set ();
+        GPIOC::ODR::ODR8::High::Set ();
+        GPIOC::ODR::ODR9::High::Set ();
+        flag = false ;
+      }
+      else
+      {
+        GPIOA::ODR::ODR5::Low::Set ();
+        GPIOC::ODR::ODR5::Low::Set ();
+        GPIOC::ODR::ODR8::Low::Set ();
+        GPIOC::ODR::ODR9::Low::Set ();
+        flag = true ;
+      }
+    }
+  }
+}
+
